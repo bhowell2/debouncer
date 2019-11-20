@@ -1,0 +1,53 @@
+name: build
+on: [push, pull_request]
+
+jobs:
+  # Builds, tests, and releases (if a release) the
+  build_test_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+
+      - name: test
+        run: ./gradlew check
+
+      - name: upload codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: get version and set version env var
+        run: |
+          echo "::set-env name=PROJECT_VERSION::$(./gradlew properties -q | awk '/^version: / {print $2}')"
+
+      # Only runs if this is a tag and if this is a release
+      - name: ensure release tag matches version
+        if: contains(github.ref, '/tags/') && contains(github.ref, '-release')
+        env:
+          ref: ${{ github.ref }}
+        run: |
+          test $PROJECT_VERSION == $(echo $ref | awk '{n=split($1,A,"/"); split(A[n],B,"-"); print B[1]}')
+
+      - name: release
+        if: contains(github.ref, '/tags/') && contains(github.ref, '-release')
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.PROJECT_VERSION }}-release
+          release_name: ${{ env.PROJECT_VERSION }}
+          draft: false
+          prerelease: false
+
+      - name: publish to sonatype
+        if: contains(github.ref, '/tags/') && contains(github.ref, '-release')
+        env:
+          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.sonatypeUsername }}
+          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.sonatypePassword }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.io_github_bhowell2_signingKey }}
+          ORG_GRADLE_PROJECT_signingKeyPassword: ${{ secrets.io_github_bhowell2_signingKeyPassword }}
+        run: ./gradlew publish
+
