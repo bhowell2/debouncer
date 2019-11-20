@@ -1,4 +1,4 @@
-![](https://github.com/bhowell2/debouncer/workflows/build/badge.svg)  
+![](https://github.com/bhowell2/debouncer/workflows/build/badge.svg) 
 [![codecov](https://codecov.io/gh/bhowell2/debouncer/branch/master/graph/badge.svg)](https://codecov.io/gh/bhowell2/debouncer)
 
 
