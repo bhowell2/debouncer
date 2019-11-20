@@ -85,6 +85,8 @@ publishing {
     create<MavenPublication>("mavenJava") {
       artifactId = project.name
       from(components["java"])
+      artifact(tasks["sourcesJar"])
+      artifact(tasks["javadocJar"])
       versionMapping {
         usage("java-api") {
           fromResolutionOf("runtimeClasspath")
