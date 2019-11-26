@@ -1,5 +1,5 @@
 
-package io.github.bhowell2;
+package io.github.bhowell2.debouncer;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -472,6 +472,7 @@ public class Debouncer<K> {
 
 	/**
 	 * See {@link ExecutorService#shutdownNow()}.
+	 *
 	 * @return list of queued runnables (i.e., {@link TimerTask}s).
 	 */
 	public List<Runnable> shutdownNow() {
@@ -496,7 +497,7 @@ public class Debouncer<K> {
 		return scheduler.awaitTermination(timeout, timeUnit);
 	}
 
-	// The task that wakes up when the wait time elapses
+	// The task that is run when the wait time elapses for the debounce interval
 	private class TimerTask implements Runnable {
 
 		private ScheduledFuture<?> scheduledFuture;
@@ -581,6 +582,7 @@ public class Debouncer<K> {
 
 		/**
 		 * If the task has not ended (i.e., been run) then it will be cancelled.
+		 *
 		 * @param runCallback whether or not to run the callback
 		 * @param runOnSchedulerThread if {@code runCallback=true} then run the callback on the scheduler it would usually
 		 *                             be run on rather than the current thread.

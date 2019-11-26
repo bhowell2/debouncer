@@ -1,6 +1,6 @@
 ![](https://github.com/bhowell2/debouncer/workflows/build/badge.svg) 
 [![codecov](https://codecov.io/gh/bhowell2/debouncer/branch/master/graph/badge.svg)](https://codecov.io/gh/bhowell2/debouncer)
-
+![](https://img.shields.io/maven-central/v/io.github.bhowell2/debouncer)
 
 # Debouncer 
 A multi-feature debouncer for Java projects, allowing to debounce immediately (i.e., run the event immediately and then 
@@ -19,14 +19,14 @@ This can be obtained from the Maven Central repository:
 <dependency>
     <groupId>io.github.bhowell2</groupId>
     <artifactId>debouncer</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
 ### Gradle
 ```groovy
 dependencies {
-    compile "io.github.bhowell2:debouncer:1.0.0"
+    compile "io.github.bhowell2:debouncer:1.1.0"
 }
 ```
 
@@ -52,11 +52,11 @@ the forced-timeout has expired and the task's callback has been run. The next ca
 create a new task. A task's timeout and forced-timeout cannot be changed once it is created and subsequent 
 attempts to debounce an event for a given key will extend the debounce interval by the initial timeout amount.
 The forced-timeout will never be changed from the event's initial creation. The callback will be changed 
-if a subsequent call of type `run-last` is made while a task is active.
+if a subsequent call of type `runLast` is made while a task is active.
 
 **Subsequent calls for the same `key` while a task is still active will ALWAYS extend expiration time.**
 
-### Run Immediately
+### Run Immediately (`addRunImmediately(...)`)
 This will immediately run the callback and will not allow any other callbacks for the given event `key`
 to run until the debounce interval has expired. 
 
@@ -75,7 +75,7 @@ debouncer.addRunImmediately(10, TimeUnit.MILLISECONDS, "key", k -> {
 });
 ```
 
-### Run First
+### Run First (`addRunFirst(...)`)
 This will run the first callback for the given event `key` when the debounce interval expires.
 
 Calls after `runFirst` (while task is active):
@@ -103,7 +103,7 @@ debouncer.addRunFirst(15, TimeUnit.MILLISECONDS, "key", k -> {
 
 ```
 
-### Run Last
+### Run Last (`addRunLast(...)`)
 This will run the last callback for the given event `key` when the debounce interval expires.
 
 Calls after `runFirst` (while task is active):
@@ -127,10 +127,11 @@ debouncer.addRunLast(15, TimeUnit.MILLISECONDS, "key", k -> {
 });
 ```
 
-### Run Immediately and Run Last (`runImmediatelyAndRunLast`)
-This is provided out of convenience so the user can always make the same call and does not have to make conditional calls.
-It would be the same as calling `runImmediately` and then when another task for the given event arrives calling `runLast`,
-but avoids the user having to keep track of whether or not they need to call `runImmediately` or `runLast`. 
+### Run Immediately and Run Last (`addRunImmediatelyAndRunLast(...)`)
+This is provided out of convenience so the user can always make the same call and does not have to make conditional 
+calls. It would be the same as calling `addRunImmediately` and then when another task for the given event arrives 
+calling `addRunLast`, but avoids the user having to keep track of whether or not they need to call `addRunImmediately` 
+or `addRunLast`. 
 
 ```java
 Debouncer debouncer = new Debouncer(1);

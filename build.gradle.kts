@@ -26,7 +26,7 @@ plugins {
 //  id("io.codearte.nexus-staging") version("0.21.1")
 }
 
-version = "1.0.0"
+version = "1.1.0"
 group = "io.github.bhowell2"
 
 repositories {
@@ -35,9 +35,7 @@ repositories {
 }
 
 dependencies {
-  // Use JUnit Jupiter API for testing.
   testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0-M1")
-  // Use JUnit Jupiter Engine for testing.
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.0-M1")
 }
 

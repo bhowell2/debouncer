@@ -1,6 +1,8 @@
-package io.github.bhowell2;
+package io.github.bhowell2.debouncer;
 
 
+import io.github.bhowell2.AsyncTestBase;
+import io.github.bhowell2.debouncer.Debouncer;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -49,7 +51,6 @@ class DebouncerTest extends AsyncTestBase {
 		}, "Should not be able to set forced timeout less than interval.");
 	}
 
-
 	/*
 	 *
 	 * RUN FIRST
@@ -72,18 +73,17 @@ class DebouncerTest extends AsyncTestBase {
 			debouncer.addRunFirst(10, TimeUnit.MILLISECONDS, key1, key -> {
 				countKey1.incrementAndGet();
 			});
-
 			debouncer.addRunFirst(10, TimeUnit.MILLISECONDS, key2, key -> {
 				countKey2.incrementAndGet();
 			});
-			Thread.sleep(12);
+			Thread.sleep(15);
 			assertEquals(1, countKey1.get());
 			assertEquals(1, countKey2.get());
 			debouncer.addRunFirst(10, TimeUnit.MILLISECONDS, key2, key -> {
 				// submit key 2 again. should increment, because should be run after all
 				countKey2.incrementAndGet();
 			});
-			Thread.sleep(12);
+			Thread.sleep(15);
 			assertEquals(1, countKey1.get(), "Should not have changed from above.");
 			assertEquals(2, countKey2.get());
 		});
