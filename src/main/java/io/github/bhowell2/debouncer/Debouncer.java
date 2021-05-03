@@ -266,7 +266,11 @@ public class Debouncer<K> {
 	 * @param key identifies the debounce task
 	 * @param callback called when debounce interval elapses
 	 */
-	public void addRunImmediatelyAndRunLast(long interval, long forcedTimeout, TimeUnit timeUnit, K key, Callback<K> callback) {
+	public void addRunImmediatelyAndRunLast(long interval,
+	                                        long forcedTimeout,
+	                                        TimeUnit timeUnit,
+	                                        K key,
+	                                        Callback<K> callback) {
 		add(true, true, interval, forcedTimeout, timeUnit, key, callback);
 	}
 
@@ -410,7 +414,7 @@ public class Debouncer<K> {
 	 *
 	 * @param key identifies event
 	 * @return 0 if no event (currently) exists for the given key. {@link Long#MAX_VALUE} if the debounce
-	 *         inerval was not set or was set to 0. some other positive interger otherwise
+	 *          interval was not set or was set to 0. some other positive integer otherwise.
 	 */
 	public long getEventsForcedExpirationTimeNanos(K key) {
 		TimerTask task = this.debounceMap.get(key);

@@ -95,7 +95,7 @@ publishing {
       }
       pom {
         name.set("Debouncer")
-        description.set("A simple debouncer for java.")
+        description.set("A (relatively) simple debouncer for java.")
         url.set("https://github.com/bhowell2/debouncer")
 //        properties.set(mapOf(
 //          "myProp" to "value",

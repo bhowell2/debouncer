@@ -34,8 +34,7 @@ dependencies {
 **It should be noted that if a forced-timeout is not supplied an event could be debounced indefinitely 
 (examples below), because every time an event is received, the debounce interval is extended.** All 
 callbacks are run on the debouncer's executor service thread, so they should not be long running as that 
-would block other callbacks from being run and could even block your calling thread to add another event 
-- ideally the user will call another thread to run the callback's actual code.
+would block other callbacks from being run and could even block your calling thread to add another event - ideally the user will call another thread to run the callback's actual code.
 
 In most cases the user will always call the same debounce type (e.g. run-first or run-last) in the same place, 
 but this is not a strict requirement and the user could call `addRunLast("key", k -> {})` then `addRunFirst(...)` 
@@ -44,7 +43,7 @@ this behavior).
 
 *For the examples below assume threads sleep for the exact amount of time. This, of course, is never really 
 the case and threads will sleep for a minimum of the sleep time, but due to scheduling they will not kick 
-back in till some time after the specified sleep time.*
+back in until some time after the specified sleep time.*
 
 ### Tasks
 These are created for each `key` supplied to the debouncer. A task is active until the debounce interval or 
@@ -54,16 +53,20 @@ attempts to debounce an event for a given key will extend the debounce interval 
 The forced-timeout will never be changed from the event's initial creation. The callback will be changed 
 if a subsequent call of type `runLast` is made while a task is active.
 
-**Subsequent calls for the same `key` while a task is still active will ALWAYS extend expiration time.**
+**Subsequent calls for the same `key` while a task is still active will ALWAYS extend expiration time (but forced-timeout will still apply if set and override the expiration).**
 
 ### Run Immediately (`addRunImmediately(...)`)
 This will immediately run the callback and will not allow any other callbacks for the given event `key`
 to run until the debounce interval has expired. 
 
-Calls after `runImmediately` (while task is active):
-`runImmediately`    - will not run anything because a task is active
-`runFirst`          - will not run anything, because a task is active.
-`runLast`           - will run the last `runLast`'s callback when the interval expires
+Calls after `runImmediately` (while task is active):  
+
+| type | action | 
+| ------ | -------- |
+| `runImmediately` | will not run anything because a task is active |
+| `runFirst`| will not run anything, because a task is active |
+| `runLast` | will run the last `runLast`'s callback when the interval expires |
+
 
 ```java
 Debouncer debouncer = new Debouncer(1);
@@ -79,9 +82,13 @@ debouncer.addRunImmediately(10, TimeUnit.MILLISECONDS, "key", k -> {
 This will run the first callback for the given event `key` when the debounce interval expires.
 
 Calls after `runFirst` (while task is active):
-`runImmediately`    - will not run anything because a task is active
-`runFirst`          - will not run anything, because a task is active.
-`runLast`           - will run the last `runLast`'s callback when the interval expires, discarding the initial `runFirst` callback
+
+| type | action | 
+| ------ | -------- |
+| `runImmediately` | will not run anything because a task is active  |
+| `runFirst`| will not run anything, because a task is active.  |
+| `runLast` | will run the last `runLast`'s callback when the interval expires, discarding the initial `runFirst` callback |
+
 
 ```java
 Debouncer debouncer = new Debouncer(1);
@@ -107,9 +114,12 @@ debouncer.addRunFirst(15, TimeUnit.MILLISECONDS, "key", k -> {
 This will run the last callback for the given event `key` when the debounce interval expires.
 
 Calls after `runFirst` (while task is active):
-`runImmediately`    - will not run anything because a task is active
-`runFirst`          - will not run anything, because a task is active.
-`runLast`           - will discard the most recent callback and override with the latest
+
+| type | action | 
+| ------ | -------- |
+| `runImmediately` | will not run anything because a task is active |
+| `runFirst`| will not run anything, because a task is active |
+| `runLast` | will discard the most recent callback and override with the latest |
 
 ```java
 Debouncer debouncer = new Debouncer(1);
@@ -128,7 +138,7 @@ debouncer.addRunLast(15, TimeUnit.MILLISECONDS, "key", k -> {
 ```
 
 ### Run Immediately and Run Last (`addRunImmediatelyAndRunLast(...)`)
-This is provided out of convenience so the user can always make the same call and does not have to make conditional 
+This is provided out of convenience, so the user can always make the same call and does not have to make conditional 
 calls. It would be the same as calling `addRunImmediately` and then when another task for the given event arrives 
 calling `addRunLast`, but avoids the user having to keep track of whether or not they need to call `addRunImmediately` 
 or `addRunLast`. 
